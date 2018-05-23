@@ -293,23 +293,23 @@ public class CSPIScanCodeGenerator
 //		}
     	
     	
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
-    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
+//    	.append(" \n")
     	
     	
     	
@@ -353,7 +353,7 @@ public class CSPIScanCodeGenerator
 		
 		
 		
-		return "";
+		return valiSb.toString();
 		
 	}
 	

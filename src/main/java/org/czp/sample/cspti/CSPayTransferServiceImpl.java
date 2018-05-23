@@ -176,8 +176,7 @@ public class CSPayTransferServiceImpl implements ITransferServices {
 			log.error("TransferResultResponse transfer[" + transferId + "] throw exception:", e);
 			response.setRetCode(ServiceResponse.RETCODE_SYSERR);
 			response.setResult(TransferOperateStatus.TRANSFER_EXCEPTION.getStatus());
-			response.setBankRetInfo(TransferOperateStatus.TRANSFER_EXCEPTION.getTitle()
-					+ e.getMessage());
+			response.setBankRetInfo(TransferOperateStatus.TRANSFER_EXCEPTION.getTitle()+ e.getMessage());
 		}
 		return response;
 	}
@@ -304,8 +303,7 @@ public class CSPayTransferServiceImpl implements ITransferServices {
 	}
 
 	@Override
-	public Map<String, TransferResultResponse> batchQueryResult(Date startTime,
-			Date endTime) {
+	public Map<String, TransferResultResponse> batchQueryResult(Date startTime,Date endTime) {
 		return null;
 	}
 
@@ -321,8 +319,7 @@ public class CSPayTransferServiceImpl implements ITransferServices {
 	}
 
 	@Override
-	public TransferResultResponse queryVerityResult(String reqSeqNo,
-			String dealDate) {
+	public TransferResultResponse queryVerityResult(String reqSeqNo,String dealDate) {
 		return null;
 	}
 
