@@ -16,15 +16,13 @@ import org.czp.utils.PropertiesUtils;
 
 public class CSPTICodeGenerator 
 {	
-	
-	
-	
+			
 	//扫码支付指令文件名
-	static String className = "MMScanPayInstruction";
+	static String className = "WZYFPayTransferServiceImpl";
 	//配置文件工具类名
-	static String propertiesName = "CSPayScanProperties";
+	static String propertiesName = "WZYFPayProperties";
 	//工具类名
-	static String utilsName = "CSPayUtil";	
+	static String utilsName = "WZYFPayUtil";	
 	//判断交易金额是元还是分 : yuan/fen
 	static String moneyFlag = "";	
 	static String fenStr = "";
@@ -33,31 +31,35 @@ public class CSPTICodeGenerator
 	public static String packageGenerator() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("package com.dinpay.dpp.csp.transfer.services.impl; \n")		
-		.append("import java.math.BigDecimal \n ")
-		.append("import java.text.DecimalFormat \n ")
-		.append("import java.util.Date \n ")
-		.append("import java.util.HashMap \n ")
-		.append("import java.util.Map \n ")
-		.append("import java.util.TreeMap \n ")
-		.append("import org.apache.commons.codec.digest.DigestUtils \n ")
-		.append("import org.apache.commons.lang.StringUtils \n ")
-		.append("import org.slf4j.Logger \n ")
-		.append("import org.slf4j.LoggerFactory \n ")
-		.append("import org.springframework.stereotype.Component \n ")
-		.append("import com.alibaba.fastjson.JSON \n ")
-		.append("import com.alibaba.fastjson.TypeReference \n ")
-		.append("import com.dinpay.dpp.csp.api.response.ServiceResponse \n ")
-		.append("import com.dinpay.dpp.csp.api.response.TransferResultResponse \n ")
-		.append("import com.dinpay.dpp.csp.transfer.commons.cspay.CSPayProperties \n ")
-		.append("import com.dinpay.dpp.csp.transfer.commons.cspay.CSPayUtil \n ")
-		.append("import com.dinpay.dpp.csp.transfer.commons.mm.MMVerifyUtils \n ")
-		.append("import com.dinpay.dpp.csp.transfer.commons.utils.InstructionUtil \n ")
-		.append("import com.dinpay.dpp.csp.transfer.services.ITransferServices \n ")
-		.append("import com.dinpay.dpp.domain.member.business.Transfer \n ")
-		.append("import com.dinpay.dpp.domain.member.config.MemberSettleconfig \n ")
-		.append("import com.dinpay.dpp.domain.member.enums.TransferOperateStatus \n ")
-		.append("import com.nbtv.commons.factory.SupportCodes \n ")
-		.append("import com.nbtv.commons.http.HttpClientUtils \n ")
+		.append("import java.math.BigDecimal; \n ")
+		.append("import java.text.DecimalFormat; \n ")
+		.append("import java.util.Date; \n ")
+		.append("import java.util.HashMap; \n ")
+		.append("import java.util.Map; \n ")
+		.append("import java.util.TreeMap; \n ")
+		.append("import org.apache.commons.codec.digest.DigestUtils; \n ")
+		.append("import org.apache.commons.lang.StringUtils; \n ")
+		.append("import org.slf4j.Logger; \n ")
+		.append("import org.slf4j.LoggerFactory; \n ")
+		.append("import org.springframework.stereotype.Component; \n ")
+		.append("import com.alibaba.fastjson.JSON; \n ")
+		.append("import com.alibaba.fastjson.TypeReference; \n ")
+		.append("import com.dinpay.dpp.csp.api.response.ServiceResponse; \n ")
+		.append("import com.dinpay.dpp.csp.api.response.TransferResultResponse; \n ")
+		.append("import com.dinpay.dpp.csp.transfer.commons.cspay.CSPayProperties; \n ")
+		.append("import com.dinpay.dpp.csp.transfer.commons.cspay.CSPayUtil; \n ")
+		.append("import com.dinpay.dpp.csp.transfer.commons.mm.MMVerifyUtils; \n ")
+		.append("import com.dinpay.dpp.csp.transfer.commons.utils.InstructionUtil; \n ")
+		.append("import com.dinpay.dpp.csp.transfer.services.ITransferServices; \n ")
+		.append("import com.dinpay.dpp.domain.member.business.Transfer; \n ")
+		.append("import com.dinpay.dpp.domain.member.config.MemberSettleconfig; \n ")
+		.append("import com.dinpay.dpp.domain.member.enums.TransferOperateStatus; \n ")
+		.append("import com.nbtv.commons.factory.SupportCodes; \n ")
+		.append("import com.nbtv.commons.http.HttpClientUtils; \n ")
+		.append("import org.slf4j.Logger; \n ")
+		.append("import org.slf4j.LoggerFactory; \n ")
+		
+		
 				
 		//动态生成对应的properties工具类
 		.append(" 动态生成对应的properties工具类  \n")
@@ -109,11 +111,8 @@ public class CSPTICodeGenerator
 		StringBuilder channelSb = new StringBuilder();
 		
 		List<String> channelCodeList = new ArrayList<String>();		
-		channelCodeList.add("ZG2_WXSCAN");	
-		channelCodeList.add("ZG2_WXSCAN1");	
-		channelCodeList.add("ZG2_WXSCAN2");	
-		channelCodeList.add("ZG2_WXSCAN3");	
-		
+		channelCodeList.add("WZYFPAY1");	
+				
 		for(String channelCode : channelCodeList) {
 			channelSb.append("\"")
 			.append(channelCode)
@@ -138,13 +137,12 @@ public class CSPTICodeGenerator
 				
 						
 		StringBuilder headSb = new StringBuilder();
-		headSb.append("public class ")
+		String headSbStr = headSb.append("public class ")
 		.append(className)
 		.append(" ")
 		.append("implements ITransferServices{ \n")
-		.append("private static final Log log = LogFactory.getLog(")
-		.append(className)
-		.append(".class); \n")
+//		private final static Logger log = LoggerFactory.getLogger(CSPayTransferServiceImpl.class);
+		.append("private final static Logger log = LoggerFactory.getLogger(").append(className).append(".class); \n")
 		.append("\n")
 		.append("@SuppressWarnings(\"unchecked\") \n")
 		.append("@Override \n")
@@ -178,7 +176,7 @@ public class CSPTICodeGenerator
 //		String bank_linked = transfer.getUniteBankId();		
 		
 		StringBuilder transferSb = new StringBuilder();
-		transferSb.append("//代付金额(单位为分) \n")
+		String transferSbStr = transferSb.append("//代付金额(单位为分) \n")
 		.append("BigDecimal trans_money_yuan = transfer.getTransferMoney(); \n")
 		.append("String trans_money = String.valueOf(trans_money_yuan.multiply(new BigDecimal(\"100\")).intValue()); \n")
 		.append("//商户交易单号 \n")
@@ -201,10 +199,10 @@ public class CSPTICodeGenerator
 //		String REQUEST_URL = CSPayProperties.getPorpertiesValueByName(channelCode, "TRANSFER_URL");
 		
 		StringBuilder propertiesSb = new StringBuilder();
-		propertiesSb.append("//商户号 \n")
+		String propertiesSbStr = propertiesSb.append("//商户号 \n")
 		.append("String mch_id =  ").append(propertiesName).append(".getPorpertiesValueByName(channelCode, \"MERCHANT_ID\"); \n")
 		.append("//MD5签名key \n")
-		.append("String key = ").append(propertiesName).append(" .getPorpertiesValueByName(channelCode, \"KEY\");\n")
+		.append("String KEY = ").append(propertiesName).append(" .getPorpertiesValueByName(channelCode, \"KEY\");\n")
 		.append("//代付地址 \n")
 		.append("String REQUEST_URL =  ").append(propertiesName).append(" .getPorpertiesValueByName(channelCode, \"TRANSFER_URL\"); \n")
 		.toString();
@@ -216,7 +214,7 @@ public class CSPTICodeGenerator
     	Map<String, Object> map = PropertiesUtils.getProperties(configFileName);
     
     	StringBuilder paramSb = new StringBuilder();
-    	paramSb.append("Map<String,Object> params = new HashMap<String,Object>(); ");
+    	paramSb.append("Map<String,Object> params = new TreeMap<String,Object>(); ");
     	
     	for(Entry<String,Object> entry : map.entrySet()) {
     		String key = entry.getKey();
@@ -239,16 +237,17 @@ public class CSPTICodeGenerator
     	.append("return response; \n")
     	.append("} \n")
     	.append("params.put(\"sign\",sign); \n")
-    	.append(" \n").toString();   	
+    	.append(" \n").toString(); 
     	
+    	String paramSbStr = paramSb.toString();
     	//################################发送请求#######################################
     	
     	StringBuilder httpSb = new StringBuilder();
     	//log.info("CSPayScanInstruction request params : " + params);
-    	httpSb.append("log.info(\"").append(className).append(" request params : \" + params); \n")
+    	String httpSbStr = httpSb.append("log.info(\"").append(className).append(" request params : \" + params); \n")
     	.append(" \n")
     	// String result = HttpClientUtils.getInstance().sendPostRequest(REQUEST_URL, params,"UTF-8");
-    	.append("String result = HttpClientUtils.getInstance().sendPostRequest(REQUEST_URL, params,\"UTF-8\"); \n");
+    	.append("String result = HttpClientUtils.getInstance().sendPostRequest(REQUEST_URL, params,\"UTF-8\"); \n").toString();
     	
     	
     	//################################ 拼接验证代码  #######################################	
@@ -258,14 +257,14 @@ public class CSPTICodeGenerator
     	String tradeNo= PropertiesUtils.getProperty(validateFileName, "tradeNo");
     	//应答码
     	String ret_code= PropertiesUtils.getProperty(validateFileName, "retCode");
-    	String ret_code_right = PropertiesUtils.getProperty(validateFileName, "ret_code");
+    	String ret_code_right = PropertiesUtils.getProperty(validateFileName, ret_code);
     	//应答信息
     	String ret_message= PropertiesUtils.getProperty(validateFileName, "retMessage");
     	//验签
     	String sign= PropertiesUtils.getProperty(validateFileName, "sign");
     	//交易状态
     	String trade_status= PropertiesUtils.getProperty(validateFileName, "tradeStatus");
-    	String trade_status_right = PropertiesUtils.getProperty(validateFileName, "trade_status");
+    	String trade_status_right = PropertiesUtils.getProperty(validateFileName, trade_status);
     	//交易信息
     	String tradeMsg= PropertiesUtils.getProperty(validateFileName, "tradeMsg");
     	
@@ -279,7 +278,7 @@ public class CSPTICodeGenerator
 //		}
 //	    log.info(new StringBuilder(preLogMsg).append("response result:").append(result).toString());
 		
-    	valiSb.append("//判断请求是否为空")
+    	valiSb.append("//判断请求是否为空 \n")
     	.append("if(StringUtils.isBlank(result)){ \n")
     	.append("log.info(new StringBuilder(preLogMsg).append(\"response result is null!\").toString()); \n")
     	.append("response.setRetMsg(\"请求银行异常\"); \n")
@@ -293,7 +292,7 @@ public class CSPTICodeGenerator
     	.append("//json转map")
     	.append("TreeMap<String, Object> returnMap = JSON.parseObject(result,new TypeReference<TreeMap<String, Object>>(){} );")
     	.append("\n")
-    	.append("//判断请求状态")
+    	.append("//判断请求状态 \n")
     	
 //    	String ret_code = String.valueOf(returnMap.get("ret_code"));
 //	    String ret_message = String.valueOf(returnMap.get("ret_message"));
@@ -333,7 +332,7 @@ public class CSPTICodeGenerator
 //	    }
     	
     	.append(" //验签 \n")
-    	.append(" String retSign = String.valueOf(returnMap.remove(\" ").append(sign).append(" \"));\n")
+    	.append(" String retSign = String.valueOf(returnMap.remove(\"").append(sign).append("\"));\n")
     	.append(" if(! ").append(utilsName).append(" .verify(retSign, returnMap, key)){ \n")
     	.append(" StringBuilder msg = new StringBuilder(preLogMsg); \n")
     	.append(" msg.append(\"signature verification failed! \"); \n")
@@ -359,7 +358,7 @@ public class CSPTICodeGenerator
     	
     	
     	.append(" //校验交易状态 \n")
-    	.append(" String tradeStatus = String.valueOf(returnMap.get(\" ").append(trade_status).append(" \")); \n")
+    	.append(" String tradeStatus = String.valueOf(returnMap.get(\"").append(trade_status).append("\")); \n")
       	.append(" if(!(\"").append(trade_status_right).append(" \".equals(tradeStatus))){ \n")
     	.append(" StringBuilder msg = new StringBuilder(preLogMsg); \n")
       	.append(" msg.append(\"not success! \"); \n")
@@ -384,7 +383,7 @@ public class CSPTICodeGenerator
 //		}
     	    	
     	.append("//校验订单号 \n")
-    	.append(" String retTradeNo = String.valueOf(returnMap.get(\"").append(tradeNo).append(" \")); \n")
+    	.append(" String retTradeNo = String.valueOf(returnMap.get(\"").append(tradeNo).append("\")); \n")
     	.append(" if(!trade_no.equals(retTradeNo)){ \n")
     	.append(" StringBuilder msg = new StringBuilder(preLogMsg); \n")
     	.append(" msg.append(\"return bankTradeId is not match. \"); \n")
@@ -395,7 +394,7 @@ public class CSPTICodeGenerator
     	.append(" } \n")
     	.append(" \n").toString();
     	       
-    	
+    	String valiSbStr = valiSb.toString();
     	    	   	   	
     	//################################结尾代码 #######################################
     	
@@ -429,8 +428,20 @@ public class CSPTICodeGenerator
     	.append(" } \n")
     	.append(" \n").toString();
     	
+    	String endSbStr = endSb.toString();
+    	    	    	
     	
+    	StringBuilder codeStr= new StringBuilder();
+    	codeStr
+//    	.append(headSbStr);
+//    	.append(transferSbStr)
+//    	.append(propertiesSbStr)
+//    	.append(paramSbStr)
+//    	.append(httpSbStr);
+    	.append(valiSbStr);
+//    	.append(endSbStr);
         	
+    	return codeStr.toString();
 	}
 	
 	
@@ -442,7 +453,7 @@ public class CSPTICodeGenerator
     	//################################ CSPTI-QUERY #######################################
     	
     	StringBuilder beginSb = new StringBuilder();      	
-    	beginSb.append(" @Override \n")
+    	String beginSbStr =  beginSb.append(" @Override \n")
     	.append(" public TransferResultResponse queryTransferResult(Transfer transfer) { \n")
     	   	
 //    	log.info("---CSPAY query transfer result start, transferId=" + transfer.getId());		
@@ -463,6 +474,11 @@ public class CSPTICodeGenerator
     	
     	
     	
+    	
+    	//漏了try
+    	
+    	
+    	
     	//#################################从properties取值#################################
 //    	//虚拟账号
 //		String MERCHANT_ID = CSPayProperties.getPorpertiesValueByName(channelCode, "MERCHANT_ID");
@@ -472,7 +488,7 @@ public class CSPTICodeGenerator
 //		String REQUEST_URL = CSPayProperties.getPorpertiesValueByName(channelCode, "QUERY_URL");
 //    	
     	StringBuilder queryPropertiesSb = new StringBuilder();
-    	queryPropertiesSb.append("//虚拟账号 \n")
+    	String queryPropertiesSbStr = queryPropertiesSb.append("//虚拟账号 \n")
     	.append(" String MERCHANT_ID = ").append(propertiesName).append(" .getPorpertiesValueByName(channelCode, \"MERCHANT_ID\");\n")
     	.append(" //MD5签名key \n")
     	.append(" String key = ").append(propertiesName).append(" .getPorpertiesValueByName(channelCode, \"KEY\"); \n")
@@ -489,7 +505,7 @@ public class CSPTICodeGenerator
 //		String transferMoney = String.valueOf(transfer.getTransferMoney().multiply(new BigDecimal("100")).intValue());
     	
     	StringBuilder queryTransferSb = new StringBuilder();
-    	queryTransferSb.append(" //通道CODE \n")
+    	String queryTransferSbStr = queryTransferSb.append(" //通道CODE \n")
     	.append(" String channelCode = transfer.getPayBankCode(); \n")
     	.append(" \n")
     	.append(" //订单号 \n")
@@ -530,7 +546,7 @@ public class CSPTICodeGenerator
     	.append("params.put(\"sign\",sign); \n")
     	.append(" \n").toString();  
 		
-		
+		String paramSbStr = paramSb.toString();
     	//################################发送请求#######################################
 //		log.info("TransferResultResponse quertyTransferResult request data:" + params.toString());		
 //		//post请求
@@ -544,10 +560,7 @@ public class CSPTICodeGenerator
     	// String result = HttpClientUtils.getInstance().sendPostRequest(REQUEST_URL, params,"UTF-8");
     	.append("String result = HttpClientUtils.getInstance().sendPostRequest(REQUEST_URL, params,\"UTF-8\"); \n")
     	.toString();
-    	
-    	
-    	
-    	
+    	String httpSbStr = httpSb.toString();
     	
     	
     	//################################ 拼接验证代码  #######################################	
@@ -583,7 +596,7 @@ public class CSPTICodeGenerator
 //	    log.info("TransferResultResponse queryTransferResult response result:" + result);
 	    		    
     	
-    	valiSb.append("//判断请求是否为空")
+    	valiSb.append("//判断请求是否为空 \n")
     	.append(" if(StringUtils.isBlank(result)){ \n")
     	.append(" log.info(\"TransferResultResponse queryTransferResult response result is null!\" ); \n")
     	.append(" response.setRetMsg(\"request bank exception!\"); \n")
@@ -595,7 +608,7 @@ public class CSPTICodeGenerator
     	
 //    	 //json转map
 //		TreeMap<String, Object> returnMap = JSON.parseObject(result,new TypeReference<TreeMap<String, Object>>(){} );
-    	.append("//json转map")
+    	.append("//json转map \n")
     	.append("TreeMap<String, Object> returnMap = JSON.parseObject(result,new TypeReference<TreeMap<String, Object>>(){} );")
     	.append("\n")
     	
@@ -610,11 +623,11 @@ public class CSPTICodeGenerator
 //		}
     	
     	
-    	.append("//判断请求状态")
+    	.append("//判断请求状态  \n")
     	.append(" String ret_code = String.valueOf(returnMap.get(\"").append(ret_code).append("\")); \n")
-    	.append(" String ret_message = String.valueOf(returnMap.get(\"").append(ret_message).append(" \")); \n")   	
+    	.append(" String ret_message = String.valueOf(returnMap.get(\"").append(ret_message).append("\")); \n")   	
 //	    if(null != ret_code && !"SUCCESS".equals(ret_code)){    	
-    	.append("if(null != ret_code && !\"").append(ret_code_right).append("\".equals(ret_code)){")  	
+    	.append("if(null != ret_code && !\"").append(ret_code_right).append("\".equals(ret_code)){ \n")  	
     	.append(" log.info(\"TransferResultResponse transfer result resCodeRe:\" + ret_code + \";msg:\" + ret_message+\",bankTradeId:\"+tranceno); \n")
     	.append(" response.setRetMsg(ret_message); \n")
     	.append(" return response; \n")
@@ -630,7 +643,7 @@ public class CSPTICodeGenerator
 //			return response;
 //		}
     	    	
-    	.append(" String retSign = String.valueOf(returnMap.remove(\" ").append(sign).append(" \"));\n")
+    	.append(" String retSign = String.valueOf(returnMap.remove(\"").append(sign).append("\"));\n")
     	.append(" if(! ").append(utilsName).append(" .verify(retSign, returnMap, key)){ \n")
     	.append(" log.info(\"TransferResultResponse transfer signature verification failed! bankTradeId:\"+ tranceno); \n")   	
       	.append(" response.setRetMsg(\"verification failed\");\n")
@@ -649,7 +662,7 @@ public class CSPTICodeGenerator
 //	    	return response;
 //	    }
     	
-    	.append(" String tradeStatus = String.valueOf(returnMap.get(\" ").append(trade_status).append(" \")); \n")
+    	.append(" String tradeStatus = String.valueOf(returnMap.get(\"").append(trade_status).append("\")); \n")
       	.append(" if(!(\"").append(trade_status_right).append(" \".equals(tradeStatus))){ \n")    	
       	.append(" log.info(new StringBuilder(\"TransferResultResponse: transfer not success status:\").append(payStatus).append(\" ; bankTradeId :\").append(tranceno).toString()); \n")
       	.append(" \n")     	    	
@@ -672,7 +685,7 @@ public class CSPTICodeGenerator
 //	    	return response;
 //	    }
     	
-    	.append(" String retMerchantId = String.valueOf(returnMap.get(\" ").append(merchantId).append(" \")); \n")
+    	.append(" String retMerchantId = String.valueOf(returnMap.get(\"").append(merchantId).append("\")); \n")
     	.append(" if(!MERCHANT_ID.equals(retMerchantId)){ \n")
     	.append(" log.info(new StringBuilder(\"TransferResultResponse: return merchantId is not match. merchantId:\") ")
     	.append(" .append(MERCHANT_ID).append(\"; bankMerchantId:\").append(retMerchantId).toString()); \n")
@@ -695,7 +708,7 @@ public class CSPTICodeGenerator
 //		}
     	
     	
-    	.append(" String  resFee = (String) returnMap.get(\" ").append(resFee).append(" \"); \n")
+    	.append(" String  resFee = (String) returnMap.get(\"").append(resFee).append("\"); \n")
     	.append(" BigDecimal total_fee = new BigDecimal(resFee); \n")
     	.append(" if (new BigDecimal(transferMoney).compareTo(total_fee) != 0) { \n")
     	.append(" log.info(new StringBuilder(\"TransferResultResponse queryTransferResult amount mismatch! total_fee:\") ")
@@ -704,7 +717,8 @@ public class CSPTICodeGenerator
     	.append(" return response; \n")
     	.append(" } \n")
     	.append(" \n").toString();
-   
+    	
+    	String valiSbStr = valiSb.toString();
     	
     	//################################结尾代码 #######################################
     	
@@ -742,6 +756,11 @@ public class CSPTICodeGenerator
     	.append(" return response; \n")
     	.append("}").toString();
 
+		String endSbStr = endSb.toString();
+		
+		return valiSbStr;
+		
+		
 		
 	}
 	
@@ -789,9 +808,19 @@ public class CSPTICodeGenerator
 //    	String configFileName = "properties/1.properties";
 //    	String a = PropertiesUtils.getProperty(configFileName, "1");
 //    	System.out.println(a);   
+    	   	
+//    	//导包
+//    	String packageStr = packageGenerator();
+//    	//注释
+//    	String remarkStr = remarkGenerator();
+//    	//标签
+//    	String labelStr = labelGenerator();
+//    	//代码
+//    	String codeStr = codeGenerator();    	   	 	
+//    	//extra
+//    	String extraSbStr = extraGenerator();
     	
-    	
-    	String str = extraGenerator();
+    	String str = queryMethodGenerator();
     	System.out.println(str);
     	
     }
