@@ -10,9 +10,9 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.czp.sample.cspti.MemberSettleconfig;
-import org.czp.sample.cspti.TransferResultResponse;
+import org.czp.utils.MapParamGenerator;
 import org.czp.utils.PropertiesUtils;
+import org.czp.utils.ValidateGenerator;
 
 public class CSPTICodeGenerator 
 {	
@@ -209,28 +209,18 @@ public class CSPTICodeGenerator
 		
 		
 		//################################拼接请求参数#######################################
+				
 		//读取上游属性配置文件
     	String configFileName = "cspti/properties/upstreamProperties.properties";
-    	Map<String, Object> map = PropertiesUtils.getProperties(configFileName);
-    
+    	
+    	MapParamGenerator mGenerator = new MapParamGenerator();
+    	String mapStr = mGenerator.mapParamGenerator(configFileName);
+    	
     	StringBuilder paramSb = new StringBuilder();
-    	paramSb.append("Map<String,Object> params = new TreeMap<String,Object>(); ");
-    	
-    	for(Entry<String,Object> entry : map.entrySet()) {
-    		String key = entry.getKey();
-    		Object value = entry.getValue();
-    		paramSb.append(" \n")
-    		.append("// ").append(value + "\n")
-    		.append("params.put(\""+key+"\",\"\"); ");
-    	}
-    	   	
-    	paramSb.append("\n")
-		
+    	paramSb.append(mapStr)		
     	.append(" //签名 \n")
-    	.append("String sign =  ").append(utilsName).append(".getSign(params, KEY); \n")
-    	
+    	.append("String sign =  ").append(utilsName).append(".getSign(params, KEY); \n")  	
     	.append("if (StringUtils.isEmpty(sign.trim())) { \n")
-    	//log.info("csp.instructionservice.CSPayScanInstruction.sign failed");
     	.append("log.info(\"csp.instructionservice.").append(className).append(".sign failed\"); \n")
     	.append("response.setRetCode(ServiceResponse.RETCODE_SYSERR); \n")
     	.append("response.setRetMsg(\"签名失败！\"); \n")
@@ -239,7 +229,9 @@ public class CSPTICodeGenerator
     	.append("params.put(\"sign\",sign); \n")
     	.append(" \n").toString(); 
     	
-    	String paramSbStr = paramSb.toString();
+    	 String paramSbStr = paramSb.toString();
+    	    	   	   	
+    	
     	//################################发送请求#######################################
     	
     	StringBuilder httpSb = new StringBuilder();
@@ -251,7 +243,11 @@ public class CSPTICodeGenerator
     	
     	
     	//################################ 拼接验证代码  #######################################	
-    	String validateFileName = "cspti/properties/validateProperties.properties";
+    	
+    	
+    	String validateFileName = "cspti/properties/validateProperties.properties";   	
+    	
+    	
     	
     	//订单号
     	String tradeNo= PropertiesUtils.getProperty(validateFileName, "tradeNo");
@@ -271,129 +267,36 @@ public class CSPTICodeGenerator
     	
     	StringBuilder valiSb = new StringBuilder();
     	
-//    	 if(StringUtils.isBlank(result)){
-//			log.info(new StringBuilder(preLogMsg).append("response result is null!").toString());
-//			response.setRetMsg("请求银行异常");
-//			return response;
-//		}
-//	    log.info(new StringBuilder(preLogMsg).append("response result:").append(result).toString());
+    	//判断请求是否为空
+    	ValidateGenerator va = new ValidateGenerator();
+		String reStr = va.resultIsBlankValidate(className);
+		valiSb.append(reStr)
 		
-    	valiSb.append("//判断请求是否为空 \n")
-    	.append("if(StringUtils.isBlank(result)){ \n")
-    	.append("log.info(new StringBuilder(preLogMsg).append(\"response result is null!\").toString()); \n")
-    	.append("response.setRetMsg(\"请求银行异常\"); \n")
-    	.append("return response; \n")
-    	.append("} \n")
-    	.append("\n")
-    	.append("log.info(new StringBuilder(preLogMsg).append(\"response result:\").append(result).toString()); \n")
+		//打印返回参数
+		.append("log.info(").append(className).append(" : response result: ).append(result).toString()); \n")
     	.append("\n")    	
+    	
 //    	 //json转map
-//		TreeMap<String, Object> returnMap = JSON.parseObject(result,new TypeReference<TreeMap<String, Object>>(){} );
     	.append("//json转map")
     	.append("TreeMap<String, Object> returnMap = JSON.parseObject(result,new TypeReference<TreeMap<String, Object>>(){} );")
-    	.append("\n")
-    	.append("//判断请求状态 \n")
-    	
-//    	String ret_code = String.valueOf(returnMap.get("ret_code"));
-//	    String ret_message = String.valueOf(returnMap.get("ret_message"));
-//	    if(null != ret_code && !"SUCCESS".equals(ret_code)){
-//	    	StringBuilder msg = new StringBuilder(preLogMsg);
-//			msg.append("response result retCode:").append(ret_code);
-//			msg.append("; message:").append(ret_message);
-//			msg.append("; trade_no:").append(trade_no);
-//			log.info(msg.toString());
-//			response.setRetMsg(ret_message);
-//			return response;
-//	    }
-    	 	
-    	.append(" String ret_code = String.valueOf(returnMap.get(\"").append(ret_code).append("\")); \n")
-    	.append(" String ret_message = String.valueOf(returnMap.get(\"").append(ret_message).append(" \")); \n")
-    	
-//	    if(null != ret_code && !"SUCCESS".equals(ret_code)){    	
-    	.append("if(null != ret_code && !\"").append(ret_code_right).append("\".equals(ret_code)){")
-    	.append(" StringBuilder msg = new StringBuilder(preLogMsg); \n")
-    	.append(" msg.append(\"response result retCode:\").append(ret_code); \n")
-    	.append(" msg.append(\"; message:\").append(ret_message); \n")
-    	.append(" log.info(msg.toString()); \n")
-    	.append(" response.setRetMsg(ret_message);\n")
-    	.append(" return response;\n")
-    	.append(" \n")
-    	
+    	.append("\n");
+    	    	
+    	//判断请求状态    	
+    	String retCodeV = va.retCodeValidate(validateFileName, className);
+    	valiSb.append(retCodeV);
     	
 //    	//验签
-//	    String retSign = String.valueOf(returnMap.remove("sign"));
-//	    if(!CSPayUtil.verify(retSign, returnMap, key)){
-//	    	StringBuilder msg = new StringBuilder(preLogMsg);
-//	    	msg.append("signature verification failed! ");
-//	    	msg.append("traceno:").append(trade_no);
-//	    	log.info(msg.toString());
-//			response.setRetMsg("verification failed");
-//			return response;
-//	    }
-    	
-    	.append(" //验签 \n")
-    	.append(" String retSign = String.valueOf(returnMap.remove(\"").append(sign).append("\"));\n")
-    	.append(" if(! ").append(utilsName).append(" .verify(retSign, returnMap, key)){ \n")
-    	.append(" StringBuilder msg = new StringBuilder(preLogMsg); \n")
-    	.append(" msg.append(\"signature verification failed! \"); \n")
-    	.append(" msg.append(\"trade_no:\").append(trade_no); \n")
-    	.append(" log.info(msg.toString()); \n")   	
-      	.append(" response.setRetMsg(\"verification failed\");\n")
-    	.append(" return response; \n")
-    	.append(" } \n")
-    	.append(" \n")
-      	
-    	
+    	String signV = va.signValidate(validateFileName, utilsName, className);
+    	valiSb.append(signV);
+    	   	   	
 //    	//校验交易状态
-//	    String tradeStatus = String.valueOf(returnMap.get("tradeStatus"));
-//	    if(!("3".equals(tradeStatus))){
-//	    	StringBuilder msg = new StringBuilder(preLogMsg);
-//	    	msg.append("not success! ");
-//	    	msg.append("transStatus:").append(tradeStatus);
-//	    	msg.append("; trade_no:").append(trade_no);
-//	    	log.info(msg.toString());
-//	    	response.setRetMsg("apply not success!");
-//	    	return response;
-//	    }
-    	
-    	
-    	.append(" //校验交易状态 \n")
-    	.append(" String tradeStatus = String.valueOf(returnMap.get(\"").append(trade_status).append("\")); \n")
-      	.append(" if(!(\"").append(trade_status_right).append(" \".equals(tradeStatus))){ \n")
-    	.append(" StringBuilder msg = new StringBuilder(preLogMsg); \n")
-      	.append(" msg.append(\"not success! \"); \n")
-    	.append(" msg.append(\"transStatus:\").append(tradeStatus); \n")
-    	.append(" msg.append(\"trade_no:\").append(trade_no); \n")
-    	.append(" log.info(msg.toString());\n")
-    	.append("response.setRetMsg(\"apply not success!\"); \n")
-    	.append("return response; \n")
-    	.append(" } \n")
-    	.append("\n")
-    	
-    	
+    	String tradeV = va.tradeStatusValidate(validateFileName, className);
+    	valiSb.append(tradeV);
+    	    		
 //    	//校验订单号
-//	    String retTradeNo = String.valueOf(returnMap.get("orderNo"));
-//		if(!trade_no.equals(retTradeNo)){
-//			StringBuilder msg = new StringBuilder(preLogMsg);
-//			msg.append("return bankTradeId is not match. ");
-//			msg.append("traceno:").append(trade_no);
-//			msg.append("; returnTraceno:").append(retTradeNo);
-//			log.info(msg.toString());
-//			return response;
-//		}
-    	    	
-    	.append("//校验订单号 \n")
-    	.append(" String retTradeNo = String.valueOf(returnMap.get(\"").append(tradeNo).append("\")); \n")
-    	.append(" if(!trade_no.equals(retTradeNo)){ \n")
-    	.append(" StringBuilder msg = new StringBuilder(preLogMsg); \n")
-    	.append(" msg.append(\"return bankTradeId is not match. \"); \n")
-    	.append(" msg.append(\"traceno:\").append(trade_no);\n")
-    	.append(" msg.append(\"; returnTraceno:\").append(retTradeNo); \n")
-    	.append(" log.info(msg.toString());\n")
-    	.append(" return response;\n")
-    	.append(" } \n")
-    	.append(" \n").toString();
-    	       
+    	String orderV = va.orderNumValidate(validateFileName, className);
+    	valiSb.append(orderV);
+    	 
     	String valiSbStr = valiSb.toString();
     	    	   	   	
     	//################################结尾代码 #######################################
@@ -436,9 +339,9 @@ public class CSPTICodeGenerator
 //    	.append(headSbStr);
 //    	.append(transferSbStr)
 //    	.append(propertiesSbStr)
-//    	.append(paramSbStr)
+    	.append(paramSbStr);
 //    	.append(httpSbStr);
-    	.append(valiSbStr);
+//    	.append(valiSbStr);
 //    	.append(endSbStr);
         	
     	return codeStr.toString();
@@ -820,7 +723,7 @@ public class CSPTICodeGenerator
 //    	//extra
 //    	String extraSbStr = extraGenerator();
     	
-    	String str = queryMethodGenerator();
+    	String str = codeGenerator();
     	System.out.println(str);
     	
     }
