@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -68,7 +69,7 @@ public class PropertiesUtils {
 			log.error("init config file error,file name:"+configFileName, ex);
 			return null;
 		}
-		Map<String, Object> propMap = new HashMap<String, Object>();
+		Map<String, Object> propMap = new TreeMap<String, Object>();
 		Iterator iter = propConfig.getKeys();
 		while(iter.hasNext()) {
 			String key = (String)iter.next();
